@@ -2,7 +2,7 @@
  * CHRONOS TypeScript SDK.
  */
 
-export { ChronosClient as Chronos } from "./client";
+export { ChronosClient as Chronos } from "./client.js";
 export type {
   Memory,
   RecallResult,
@@ -19,4 +19,4 @@ export type {
   ViewInfo,
   SnapshotInfo,
   RBACPolicy,
-} from "./types";
+} from "./types.js";

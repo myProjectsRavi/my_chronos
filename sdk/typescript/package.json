@@ -1,6 +1,7 @@
 {
   "name": "chronos-memory",
   "version": "1.0.2-dev.0",
+  "type": "module",
   "description": "TypeScript SDK for CHRONOS",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

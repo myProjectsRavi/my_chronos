@@ -10,7 +10,7 @@ import type {
   StreamBatchResponse,
   StreamItem,
   ViewInfo,
-} from "./types";
+} from "./types.js";
 
 export class ChronosClient {
   private readonly url: string;
