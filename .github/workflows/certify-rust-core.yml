@@ -1,0 +1,37 @@
+name: Certify CHRONOS Rust Core
+
+on:
+  push:
+    branches:
+      - cert/rust-core
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout clean certification branch
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Regenerate and verify exact candidate lockfile
+        working-directory: chronos-core
+        shell: bash
+        run: |
+          cargo generate-lockfile
+          actual="$(git hash-object Cargo.lock)"
+          expected="68288a6775b86b723874c808b36afdf5709a3ca5"
+          echo "Cargo.lock blob: $actual"
+          test "$actual" = "$expected"
+
+      - name: Test all targets and features with locked graph
+        run: cargo test --manifest-path chronos-core/Cargo.toml --all-targets --all-features --locked
+
+      - name: Strict Clippy gate
+        run: cargo clippy --manifest-path chronos-core/Cargo.toml --all-targets --all-features --locked -- -D warnings

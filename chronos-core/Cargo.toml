@@ -1,0 +1,24 @@
+[package]
+name = "chronos-core"
+version = "1.0.2-dev.0"
+edition = "2021"
+license = "MIT"
+description = "High-performance core library for Chronos AI memory"
+
+[features]
+default = []
+hnsw = []
+python = ["dep:pyo3"]
+
+[dependencies]
+ed25519-dalek = { version = "2", features = ["rand_core"] }
+sha2 = "0.10"
+base58 = "0.2"
+memmap2 = "0.9"
+rmp-serde = "1"
+serde = { version = "1", features = ["derive"] }
+rand = "0.10"
+
+[dependencies.pyo3]
+version = "0.28"
+optional = true
