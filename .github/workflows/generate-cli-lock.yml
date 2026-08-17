@@ -1,4 +1,4 @@
-name: Generate CHRONOS CLI Cargo.lock
+name: Generate and Certify CHRONOS CLI Cargo.lock
 
 on:
   push:
@@ -14,7 +14,7 @@ permissions:
   contents: write
 
 jobs:
-  generate-lockfile:
+  generate-and-certify:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -27,7 +27,15 @@ jobs:
         working-directory: chronos-cli
         run: cargo generate-lockfile
 
-      - name: Commit generated lockfile
+      - name: Test native launcher with reviewed lockfile
+        working-directory: chronos-cli
+        run: cargo test --all-targets --locked
+
+      - name: Clippy strict gate
+        working-directory: chronos-cli
+        run: cargo clippy --all-targets --locked -- -D warnings
+
+      - name: Commit generated lockfile if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
