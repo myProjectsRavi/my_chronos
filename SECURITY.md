@@ -2,17 +2,15 @@
 
 Security reports must be handled privately.
 
-## Current pre-release state
+## Private vulnerability reporting
 
-The implementation source has not yet been published in this clean public lineage. GitHub **Private vulnerability reporting must be enabled before implementation publication** and is part of the mandatory public-release gate.
+GitHub Private Vulnerability Reporting is enabled for this repository.
 
-Until that setting is enabled, do **not** disclose suspected vulnerabilities in a public issue, pull request, discussion, or commit message. The repository does not yet contain the implementation intended for public security review.
-
-## Reporting after source publication
-
-Once GitHub Private vulnerability reporting is enabled, use:
+To report a suspected vulnerability, use:
 
 **Security → Advisories → Report a vulnerability**
+
+Do **not** disclose suspected vulnerabilities in a public issue, pull request, discussion, commit message, Actions log, or other public channel.
 
 Include, where possible:
 
@@ -22,11 +20,15 @@ Include, where possible:
 - realistic impact and prerequisites;
 - any suggested remediation.
 
-Never include real credentials, personal data, private customer data, employer-confidential material, or third-party confidential information in a report.
+Never include real credentials, personal data, private customer data, employer-confidential material, or third-party confidential information in a report. Use synthetic data only.
 
-## Scope
+## Current pre-release state
 
-Supported/stable surfaces will be identified explicitly with the source release. Beta, experimental, research, and simulation-only modules do not inherit production-security claims merely by existing in the repository.
+The implementation source has not yet been published in this clean public lineage. This repository currently contains the public governance and release-safety baseline only; it does not yet represent a production-certified CHRONOS distribution.
+
+## Scope after source publication
+
+Supported and stable surfaces will be identified explicitly with the source release. Beta, experimental, research, and simulation-only modules do not inherit production-security claims merely by existing in the repository.
 
 ## Disclosure
 
