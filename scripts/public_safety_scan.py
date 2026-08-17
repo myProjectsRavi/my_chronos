@@ -15,6 +15,8 @@ from pathlib import PurePosixPath
 
 MAX_BLOB_BYTES = 5 * 1024 * 1024
 ALLOWED_EMAIL_DOMAINS = {"users.noreply.github.com", "example.com", "example.org", "example.net"}
+ALLOWED_EMAIL_ADDRESSES = {"noreply@github.com"}
+ALLOWED_SYSTEM_IDENTITIES = {("GitHub", "noreply@github.com")}
 ALLOWED_HOME_PREFIXES = {"/home/chronos/"}
 
 SECRET_PATTERNS = {
@@ -32,7 +34,7 @@ SECRET_PATTERNS = {
     ),
 }
 
-EMAIL_RE = re.compile(r"\b[A-Z0-9._%+-]+@([A-Z0-9.-]+\.[A-Z]{2,})\b", re.IGNORECASE)
+EMAIL_RE = re.compile(r"\b([A-Z0-9._%+-]+@([A-Z0-9.-]+\.[A-Z]{2,}))\b", re.IGNORECASE)
 HOME_PATTERNS = [
     re.compile("/" + "Users" + r"/[A-Za-z0-9._ -]+/"),
     re.compile("/" + "home" + r"/[A-Za-z0-9._-]+/"),
@@ -62,14 +64,21 @@ def check_complete_history() -> None:
 
 
 def check_commit_metadata() -> None:
-    raw = git("log", "--all", "--format=%H%x00%ae%x00%ce%x00%B%x00")
+    raw = git("log", "--all", "--format=%H%x00%an%x00%ae%x00%cn%x00%ce%x00%B%x00")
     fields = raw.split("\x00")
-    for i in range(0, len(fields) - 3, 4):
-        sha, author_email, committer_email, message = fields[i : i + 4]
-        for role, email in (("author", author_email), ("committer", committer_email)):
+    for i in range(0, len(fields) - 5, 6):
+        sha, author_name, author_email, committer_name, committer_email, message = fields[i : i + 6]
+        identities = (
+            ("author", author_name, author_email),
+            ("committer", committer_name, committer_email),
+        )
+        for role, name, email in identities:
             if not email:
                 fail(f"{sha}: missing {role} email metadata")
-            domain = email.rsplit("@", 1)[-1].lower()
+            normalized_email = email.lower()
+            if (name, normalized_email) in ALLOWED_SYSTEM_IDENTITIES:
+                continue
+            domain = normalized_email.rsplit("@", 1)[-1]
             if domain not in ALLOWED_EMAIL_DOMAINS:
                 fail(f"{sha}: non-public {role} email domain: {domain}")
         scan_text(message, f"commit {sha} message")
@@ -80,9 +89,11 @@ def scan_text(text: str, where: str) -> None:
         if pattern.search(text):
             fail(f"{where}: matched {label}")
     for match in EMAIL_RE.finditer(text):
-        domain = match.group(1).lower()
-        if domain not in ALLOWED_EMAIL_DOMAINS:
-            fail(f"{where}: non-example email domain {domain}")
+        address = match.group(1).lower()
+        domain = match.group(2).lower()
+        if address in ALLOWED_EMAIL_ADDRESSES or domain in ALLOWED_EMAIL_DOMAINS:
+            continue
+        fail(f"{where}: non-example email domain {domain}")
     for pattern in HOME_PATTERNS:
         for match in pattern.finditer(text):
             value = match.group(0)
