@@ -16,6 +16,14 @@ This repository is the clean public lineage. Implementation contributions will o
 - Clearly label experimental or simulation-only behavior; do not present it as a production guarantee.
 - Prefer evidence-backed performance claims with reproducible benchmarks.
 
+## Change workflow
+
+- Never commit implementation changes directly to `main`; use a focused branch and pull request.
+- Review the staged diff before every public commit, including filenames, generated files, logs, fixtures, and examples.
+- Use synthetic data in tests, documentation, issues, pull requests, and security reproductions.
+- Treat dependency manifests, lockfiles, GitHub Actions, release automation, and documentation claims as security-relevant changes.
+- Do not merge when a required check is unavailable, skipped unexpectedly, or failing.
+
 ## Pull requests
 
 A strong pull request should explain:
@@ -34,4 +42,6 @@ Do not file vulnerabilities publicly. Follow [SECURITY.md](SECURITY.md).
 
 ## Commit hygiene
 
-Use a GitHub noreply email or another intentionally public identity. Never put secrets, tokens, personal email addresses, customer names, local user-home paths, or private incident details in commit messages.
+Use a GitHub noreply email or another intentionally public identity. Never put secrets, tokens, personal email addresses, customer names, local user-home paths, private incident details, exploit details, or unsanitized logs in commit subjects or bodies.
+
+Use concise Conventional Commit-style subjects, for example `fix: reject unsafe import paths` or `docs: clarify security reporting`. Keep messages factual and avoid security, performance, compatibility, or readiness claims that are not supported by evidence in the change.

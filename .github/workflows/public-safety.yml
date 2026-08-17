@@ -19,7 +19,7 @@ permissions:
 jobs:
   history-safety:
     name: Full-history secret and privacy gate
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - name: Checkout complete history
@@ -42,6 +42,9 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && inputs.include_pull_request_refs }}
         shell: bash
         run: git fetch origin '+refs/pull/*/head:refs/remotes/origin/pull/*' --force --prune
+
+      - name: Test safety scanner
+        run: python3 -m unittest discover -s scripts -p 'test_public_safety_scan.py'
 
       - name: Scan all reachable Git objects
         run: python3 scripts/public_safety_scan.py

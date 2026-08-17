@@ -19,6 +19,7 @@ The source snapshot must **not** be imported until every mandatory gate below is
 - [x] Initialization commits use a GitHub noreply identity.
 - [x] No inherited tags, releases, stale branches, or historical pull-request refs.
 - [x] Full-history secret/privacy scanner runs against every reachable owned ref.
+- [x] Public safety scanner regression tests exercise sensitive-path and public-identity policy.
 - [ ] Final source-import commit passes the full-history scanner.
 - [ ] Deliberate final audit includes any stored public PR-head refs that exist at release time.
 
@@ -49,18 +50,22 @@ The source snapshot must **not** be imported until every mandatory gate below is
 
 ## 6. GitHub repository settings
 
-These are platform settings and must be verified in GitHub before source publication:
+These platform settings are verified directly in GitHub and remain part of the release gate:
 
-- [ ] Add a concise repository description and relevant topics.
-- [ ] Enable GitHub Private vulnerability reporting.
-- [ ] Protect `main` with a ruleset/branch protection requiring pull requests and required checks.
-- [ ] Prevent force pushes and branch deletion on protected `main`.
-- [ ] Require the Public Safety check and final project CI checks before merge.
-- [ ] Enable automatic deletion of merged feature branches.
-- [ ] Enable update-branch support for pull requests.
-- [ ] Choose and document the intended merge strategy; avoid unnecessary merge-history noise.
-- [ ] Disable unused Wiki/Projects surfaces unless the project intentionally uses them.
-- [ ] Verify Dependabot/security-alert/code-scanning settings after dependencies are published.
+- [x] Concise repository description and relevant topics are configured.
+- [x] GitHub Private Vulnerability Reporting is enabled.
+- [x] `main` is protected by an active repository ruleset requiring pull requests.
+- [x] Protected `main` blocks branch deletion and non-fast-forward updates.
+- [x] Pull-request review-thread resolution is required.
+- [x] Update-branch support is enabled for pull requests.
+- [x] Public Safety is a required status check before merge.
+- [x] Automatic deletion of merged feature branches is enabled.
+- [x] Unused Wiki and Projects surfaces are disabled.
+- [x] Require protected pull-request branches to be up to date with `main` before merge.
+- [x] Restrict the repository and ruleset merge strategy to squash-only.
+- [ ] Verify Dependabot/security-alert/secret-scanning/code-scanning settings after dependencies and implementation are published.
+
+For the current solo-maintainer phase, the ruleset intentionally requires zero approving reviews so the repository cannot deadlock itself. Review requirements can be raised when an independent trusted maintainer is available.
 
 ## 7. Final exposure review
 
