@@ -1,0 +1,48 @@
+name: Certify CHRONOS Security Delta
+
+on:
+  push:
+    branches:
+      - cert/security-delta-v2
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: chronos-security-delta-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security-delta:
+    name: Standalone security delta
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout certification snapshot
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify staged tree safety
+        run: python3 scripts/public_safety_scan.py
+
+      - name: Create isolated Python environment
+        run: |
+          python3 -m venv .cert-venv
+          echo "${{ github.workspace }}/.cert-venv/bin" >> "$GITHUB_PATH"
+
+      - name: Install test dependencies
+        run: |
+          python -m pip install --disable-pip-version-check --upgrade pip
+          python -m pip install --disable-pip-version-check "pytest>=7,<9" "pytest-asyncio>=0.23,<1"
+
+      - name: Run exact security-delta regressions
+        env:
+          PYTHONPATH: src
+        run: |
+          pytest -q \
+            tests/unit/test_outbound_security.py \
+            tests/unit/test_telemetry_v10.py \
+            tests/unit/test_marketplace_security.py
