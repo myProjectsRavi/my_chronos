@@ -1,0 +1,67 @@
+name: Certify CHRONOS TypeScript SDK
+
+on:
+  push:
+    branches:
+      - cert/typescript
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout clean certification branch
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 1
+          persist-credentials: true
+
+      - name: Generate canonical npm lockfile
+        working-directory: sdk/typescript
+        run: npm install --package-lock-only --ignore-scripts
+
+      - name: Install exact generated graph
+        working-directory: sdk/typescript
+        run: npm ci --ignore-scripts
+
+      - name: Strict TypeScript build
+        working-directory: sdk/typescript
+        run: npm run build
+
+      - name: Vitest contract suite
+        working-directory: sdk/typescript
+        run: npm test -- --run
+
+      - name: High-severity dependency audit
+        working-directory: sdk/typescript
+        run: npm audit --audit-level=high
+
+      - name: Report lock identity
+        working-directory: sdk/typescript
+        shell: bash
+        run: |
+          actual="$(git hash-object package-lock.json)"
+          expected="b8af4c3b7a5a1fcb159a95f463ec8b7f90a56d4d"
+          echo "Generated package-lock blob: $actual"
+          echo "Private candidate package-lock blob: $expected"
+          if [ "$actual" = "$expected" ]; then
+            echo "LOCK_IDENTITY=exact"
+          else
+            echo "LOCK_IDENTITY=refresh-required"
+          fi
+
+      - name: Commit certified canonical lockfile if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sdk/typescript/package-lock.json
+          if git diff --cached --quiet; then
+            echo "package-lock.json already canonical"
+            exit 0
+          fi
+          git commit -m "build: generate canonical TypeScript lockfile"
+          git push origin HEAD:cert/typescript

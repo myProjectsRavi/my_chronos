@@ -1,0 +1,27 @@
+{
+  "name": "chronos-memory",
+  "version": "1.0.2-dev.0",
+  "description": "TypeScript SDK for CHRONOS",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "prepublishOnly": "npm run build && npm test -- --run"
+  },
+  "keywords": ["ai", "memory", "chronos", "vector", "search"],
+  "author": "CHRONOS contributors",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.4",
+    "vitest": "^4.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/myProjectsRavi/my_chronos.git"
+  },
+  "bugs": {
+    "url": "https://github.com/myProjectsRavi/my_chronos/issues"
+  }
+}
