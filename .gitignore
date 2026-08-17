@@ -1,0 +1,71 @@
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.asc
+*.gpg
+*.age
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+.coverage
+coverage.xml
+htmlcov/
+build/
+dist/
+*.egg-info/
+
+# JavaScript / TypeScript
+node_modules/
+**/node_modules/
+**/dist/
+
+# Rust / Go
+**/target/
+
+# CHRONOS runtime state
+.chronos/
+**/.chronos/
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.wal
+*.shm
+*.snapshot
+*.snapshot.sha256
+snapshots/
+backups/
+backup/
+identity.json
+*.identity.json
+api-files/
+models/
+
+# Temporary / local-only
+*.tmp
+*.bak
+.claude/
+.github-runner/
+chronos-runner/

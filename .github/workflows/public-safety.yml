@@ -1,0 +1,47 @@
+name: Public Safety
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      include_pull_request_refs:
+        description: Fetch all stored PR-head refs for deliberate pre-public/final audits
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  history-safety:
+    name: Full-history secret and privacy gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout complete history
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Anchor checked-out commit
+        shell: bash
+        run: git update-ref refs/chronos/checked-out-head "$GITHUB_SHA"
+
+      - name: Fetch repository-owned branches and tags
+        shell: bash
+        run: |
+          git fetch --no-tags origin '+refs/heads/*:refs/remotes/origin/*' --force --prune
+          git fetch origin '+refs/tags/*:refs/tags/*' --force --prune
+
+      - name: Optionally fetch stored PR heads for final audit
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.include_pull_request_refs }}
+        shell: bash
+        run: git fetch origin '+refs/pull/*/head:refs/remotes/origin/pull/*' --force --prune
+
+      - name: Scan all reachable Git objects
+        run: python3 scripts/public_safety_scan.py

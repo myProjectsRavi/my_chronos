@@ -1,0 +1,60 @@
+# VCS / CI metadata
+.git/
+.github/
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.asc
+*.gpg
+*.age
+
+# CHRONOS runtime state
+.chronos/
+**/.chronos/
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.wal
+*.shm
+*.snapshot
+*.snapshot.sha256
+snapshots/
+backups/
+backup/
+identity.json
+*.identity.json
+api-files/
+models/
+
+# Development/build artifacts
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+node_modules/
+**/node_modules/
+**/target/
+htmlcov/
+.coverage
+coverage.xml
+build/
+dist/
+*.egg-info/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
