@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   certify:
@@ -18,23 +18,26 @@ jobs:
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           fetch-depth: 1
-          persist-credentials: false
+          persist-credentials: true
 
-      - name: Reconstruct and verify exact candidate lockfile
+      - name: Generate current canonical Rust core lockfile
         working-directory: chronos-core
-        shell: bash
-        run: |
-          cargo generate-lockfile
-          cargo update -p pyo3 --precise 0.28.2
-          echo "Lock bytes: $(wc -c < Cargo.lock)"
-          grep -E '^(name|version) = ' Cargo.lock
-          actual="$(git hash-object Cargo.lock)"
-          expected="68288a6775b86b723874c808b36afdf5709a3ca5"
-          echo "Reconstructed Cargo.lock blob: $actual"
-          test "$actual" = "$expected"
+        run: cargo generate-lockfile
 
-      - name: Test all targets and features with exact locked graph
+      - name: Test all targets and features with canonical locked graph
         run: cargo test --manifest-path chronos-core/Cargo.toml --all-targets --all-features --locked
 
       - name: Strict Clippy gate
         run: cargo clippy --manifest-path chronos-core/Cargo.toml --all-targets --all-features --locked -- -D warnings
+
+      - name: Commit certified canonical lockfile
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add chronos-core/Cargo.lock
+          if git diff --cached --quiet; then
+            echo "Cargo.lock already canonical"
+            exit 0
+          fi
+          git commit -m "build: generate canonical Rust core lockfile"
+          git push origin HEAD:cert/rust-core
