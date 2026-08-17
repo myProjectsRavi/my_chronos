@@ -1,0 +1,48 @@
+name: Certify CHRONOS Go SDK
+
+on:
+  push:
+    branches:
+      - cert/go
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout clean certification branch
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Verify gofmt cleanliness
+        working-directory: go-chronos
+        shell: bash
+        run: |
+          diff="$(gofmt -d .)"
+          if [ -n "$diff" ]; then
+            printf '%s\n' "$diff"
+            exit 1
+          fi
+
+      - name: Verify module graph is tidy
+        working-directory: go-chronos
+        shell: bash
+        run: |
+          cp go.mod /tmp/go.mod.before
+          go mod tidy
+          diff -u /tmp/go.mod.before go.mod
+          test ! -f go.sum || test ! -s go.sum
+
+      - name: Run full Go tests
+        working-directory: go-chronos
+        run: go test ./...
+
+      - name: Run go vet
+        working-directory: go-chronos
+        run: go vet ./...
