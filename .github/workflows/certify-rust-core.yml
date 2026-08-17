@@ -20,17 +20,18 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      - name: Regenerate and verify exact candidate lockfile
+      - name: Reconstruct and verify exact candidate lockfile
         working-directory: chronos-core
         shell: bash
         run: |
           cargo generate-lockfile
+          cargo update -p pyo3 --precise 0.28.2
           actual="$(git hash-object Cargo.lock)"
           expected="68288a6775b86b723874c808b36afdf5709a3ca5"
-          echo "Cargo.lock blob: $actual"
+          echo "Reconstructed Cargo.lock blob: $actual"
           test "$actual" = "$expected"
 
-      - name: Test all targets and features with locked graph
+      - name: Test all targets and features with exact locked graph
         run: cargo test --manifest-path chronos-core/Cargo.toml --all-targets --all-features --locked
 
       - name: Strict Clippy gate
