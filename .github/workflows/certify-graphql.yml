@@ -1,0 +1,60 @@
+name: Certify CHRONOS GraphQL Runtime
+
+on:
+  push:
+    branches:
+      - cert/graphql
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  graphql-runtime:
+    name: Ariadne ${{ matrix.ariadne }} runtime
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        ariadne: ["0.22.0", "latest"]
+    steps:
+      - name: Checkout minimal certification snapshot
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Verify public certification snapshot safety
+        run: python3 scripts/public_safety_scan.py
+
+      - name: Create isolated Python environment
+        run: |
+          python3 -m venv .cert-venv
+          echo "${{ github.workspace }}/.cert-venv/bin" >> "$GITHUB_PATH"
+
+      - name: Install real Ariadne runtime
+        env:
+          ARIADNE_VERSION: ${{ matrix.ariadne }}
+        run: |
+          python -m pip install --disable-pip-version-check --upgrade pip
+          if [ "$ARIADNE_VERSION" = "latest" ]; then
+            python -m pip install --disable-pip-version-check "ariadne>=0.22" "httpx>=0.27,<1" "pytest>=7" "pytest-asyncio>=0.23"
+          else
+            python -m pip install --disable-pip-version-check "ariadne==$ARIADNE_VERSION" "httpx>=0.27,<1" "pytest>=7" "pytest-asyncio>=0.23"
+          fi
+          python - <<'PY'
+          import importlib.metadata
+          import sys
+          print(f"Python {sys.version.split()[0]}")
+          print(f"Ariadne {importlib.metadata.version('ariadne')}")
+          print(f"graphql-core {importlib.metadata.version('graphql-core')}")
+          print(f"httpx {importlib.metadata.version('httpx')}")
+          print(f"pytest {importlib.metadata.version('pytest')}")
+          print(f"pytest-asyncio {importlib.metadata.version('pytest-asyncio')}")
+          PY
+
+      - name: Execute exact private GraphQL integration regression
+        env:
+          PYTHONPATH: src
+        run: pytest -q tests/integration/test_graphql_runtime.py
