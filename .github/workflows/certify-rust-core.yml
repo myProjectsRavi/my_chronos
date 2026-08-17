@@ -26,6 +26,8 @@ jobs:
         run: |
           cargo generate-lockfile
           cargo update -p pyo3 --precise 0.28.2
+          echo "Lock bytes: $(wc -c < Cargo.lock)"
+          grep -E '^(name|version) = ' Cargo.lock
           actual="$(git hash-object Cargo.lock)"
           expected="68288a6775b86b723874c808b36afdf5709a3ca5"
           echo "Reconstructed Cargo.lock blob: $actual"
