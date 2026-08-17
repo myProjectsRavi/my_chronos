@@ -1,30 +1,32 @@
 # Security Policy
 
-Security reports are welcome and should be handled privately.
+Security reports must be handled privately.
 
-## Reporting a vulnerability
+## Current pre-release state
 
-Please **do not open a public issue** for a suspected vulnerability.
+The implementation source has not yet been published in this clean public lineage. GitHub **Private vulnerability reporting must be enabled before implementation publication** and is part of the mandatory public-release gate.
 
-Use GitHub's private vulnerability reporting for this repository:
+Until that setting is enabled, do **not** disclose suspected vulnerabilities in a public issue, pull request, discussion, or commit message. The repository does not yet contain the implementation intended for public security review.
+
+## Reporting after source publication
+
+Once GitHub Private vulnerability reporting is enabled, use:
 
 **Security → Advisories → Report a vulnerability**
 
 Include, where possible:
 
 - the affected component and version or commit;
-- a minimal reproduction or proof of concept;
+- a minimal synthetic reproduction or proof of concept;
 - expected versus observed behavior;
 - realistic impact and prerequisites;
 - any suggested remediation.
 
-Do not include real credentials, personal data, private customer data, or third-party confidential information in a report. Use synthetic examples.
+Never include real credentials, personal data, private customer data, employer-confidential material, or third-party confidential information in a report.
 
 ## Scope
 
-Until the source-release gate is complete, this repository is a pre-release public lineage and does not represent a production-certified distribution.
-
-After source publication, supported/stable surfaces will be identified explicitly. Beta, experimental, research, and simulation-only modules will not inherit production-security claims merely by existing in the repository.
+Supported/stable surfaces will be identified explicitly with the source release. Beta, experimental, research, and simulation-only modules do not inherit production-security claims merely by existing in the repository.
 
 ## Disclosure
 
