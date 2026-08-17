@@ -1,0 +1,6 @@
+[package]
+name = "chronos-cli"
+version = "1.0.2-dev.0"
+edition = "2021"
+license = "MIT"
+description = "Native CLI for Chronos"
