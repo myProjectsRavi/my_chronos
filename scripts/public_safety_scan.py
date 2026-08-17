@@ -34,9 +34,9 @@ SECRET_PATTERNS = {
 
 EMAIL_RE = re.compile(r"\b[A-Z0-9._%+-]+@([A-Z0-9.-]+\.[A-Z]{2,})\b", re.IGNORECASE)
 HOME_PATTERNS = [
-    re.compile("/" + "Users" + r"/[^/\s]+/"),
-    re.compile("/" + "home" + r"/[^/\s]+/"),
-    re.compile(r"[A-Za-z]:\\" + "Users" + r"\\[^\\\s]+\\"),
+    re.compile("/" + "Users" + r"/[A-Za-z0-9._ -]+/"),
+    re.compile("/" + "home" + r"/[A-Za-z0-9._-]+/"),
+    re.compile(r"[A-Za-z]:\\" + "Users" + r"\\[A-Za-z0-9._ -]+\\"),
 ]
 
 SENSITIVE_SUFFIXES = {".pem", ".key", ".p12", ".pfx", ".jks", ".keystore", ".sqlite", ".sqlite3", ".snapshot"}
