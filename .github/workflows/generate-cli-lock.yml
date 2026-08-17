@@ -6,6 +6,7 @@ on:
       - cert/cargo-lock-bootstrap
     paths:
       - chronos-cli/Cargo.toml
+      - chronos-cli/src/main.rs
       - .github/workflows/generate-cli-lock.yml
   workflow_dispatch:
 
