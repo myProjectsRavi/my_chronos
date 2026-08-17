@@ -19,6 +19,7 @@ The source snapshot must **not** be imported until every mandatory gate below is
 - [x] Initialization commits use a GitHub noreply identity.
 - [x] No inherited tags, releases, stale branches, or historical pull-request refs.
 - [x] Full-history secret/privacy scanner runs against every reachable owned ref.
+- [x] Public safety scanner regression tests exercise sensitive-path and public-identity policy.
 - [ ] Final source-import commit passes the full-history scanner.
 - [ ] Deliberate final audit includes any stored public PR-head refs that exist at release time.
 
@@ -57,10 +58,11 @@ These platform settings are verified directly in GitHub and remain part of the r
 - [x] Protected `main` blocks branch deletion and non-fast-forward updates.
 - [x] Pull-request review-thread resolution is required.
 - [x] Update-branch support is enabled for pull requests.
-- [ ] Require the Public Safety status check, and later the final project CI checks, before merge.
-- [ ] Enable automatic deletion of merged feature branches.
-- [ ] Restrict and document the intended merge strategy to avoid unnecessary merge-history noise.
-- [ ] Disable unused Wiki/Projects surfaces unless the project intentionally uses them.
+- [x] Public Safety is a required status check before merge.
+- [x] Automatic deletion of merged feature branches is enabled.
+- [x] Unused Wiki and Projects surfaces are disabled.
+- [ ] Require protected pull-request branches to be up to date with `main` before merge.
+- [ ] Restrict the repository and ruleset merge strategy to squash-only.
 - [ ] Verify Dependabot/security-alert/secret-scanning/code-scanning settings after dependencies and implementation are published.
 
 For the current solo-maintainer phase, the ruleset intentionally requires zero approving reviews so the repository cannot deadlock itself. Review requirements can be raised when an independent trusted maintainer is available.
