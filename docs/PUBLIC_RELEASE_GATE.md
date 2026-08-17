@@ -61,8 +61,8 @@ These platform settings are verified directly in GitHub and remain part of the r
 - [x] Public Safety is a required status check before merge.
 - [x] Automatic deletion of merged feature branches is enabled.
 - [x] Unused Wiki and Projects surfaces are disabled.
-- [ ] Require protected pull-request branches to be up to date with `main` before merge.
-- [ ] Restrict the repository and ruleset merge strategy to squash-only.
+- [x] Require protected pull-request branches to be up to date with `main` before merge.
+- [x] Restrict the repository and ruleset merge strategy to squash-only.
 - [ ] Verify Dependabot/security-alert/secret-scanning/code-scanning settings after dependencies and implementation are published.
 
 For the current solo-maintainer phase, the ruleset intentionally requires zero approving reviews so the repository cannot deadlock itself. Review requirements can be raised when an independent trusted maintainer is available.
